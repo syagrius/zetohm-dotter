@@ -4,6 +4,7 @@
 depends = []
 
 [default.files]
+"wezterm/wezterm.lua" = "~/.config/wezterm/wezterm.lua"
 
 [default.variables]
 
