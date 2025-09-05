@@ -1,3 +1,5 @@
 [symlinks]
+"powershell/Microsoft.PowerShell_profile.ps1" = "C:\\Users\\Serge/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
+"wezterm/wezterm.lua" = "C:\\Users\\Serge/.config/wezterm/wezterm.lua"
 
 [templates]
