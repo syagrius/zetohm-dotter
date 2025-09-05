@@ -5,6 +5,7 @@ depends = []
 
 [default.files]
 "wezterm/wezterm.lua" = "~/.config/wezterm/wezterm.lua"
+"powershell/Microsoft.PowerShell_profile.ps1" = "~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
 
 [default.variables]
 
