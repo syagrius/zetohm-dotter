@@ -9,5 +9,14 @@ depends = []
 
 [default.variables]
 
+# Package FNM (Fast Node Manager)
+[fnm]
+depends = []
+
+[fnm.files]
+"fnm/fnm-init.ps1" = "~/.config/powershell/fnm-init.ps1"
+
+[fnm.variables]
+
 [settings]
 default_target_type = "automatic"
