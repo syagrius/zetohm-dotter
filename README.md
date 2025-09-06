@@ -31,7 +31,7 @@ Conservé et amélioré
 
 Nouveautés et remplacements
 
-    Terminal : WezTerm (Rust) → remplace ConEmu + Terminal Preview
+    Terminal : WezTerm (Rust) + Sharship (Rust) + zoxide (Rust) + fzf (go) → remplace ConEmu + Terminal Preview
     Microservices : Nouveaux services en Rust
     Node.js : fnm (Rust) pour la gestion des versions Node.js
     IA : Claude CLI pour l'intégration IA
