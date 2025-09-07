@@ -31,6 +31,9 @@ Conservé et amélioré
     Lazarus avec mORMot2 + Zeos
     Principe du dog fooding : utilisation de nos outils internes avec la toolchain déployée chez nos utilisateurs ou clients
 
+    Nous utilisons scoop, choco et winget dans cette ordre pour déployer les outils.
+  
+
 Nouveautés et remplacements
 
     Terminal : WezTerm (Rust) + Sharship (Rust) + zoxide (Rust) + fzf (go) → remplace ConEmu + Terminal Preview
@@ -50,7 +53,13 @@ Nouveautés et remplacements
 
 ```powershell
 # Prérequis
-# minicond:  choco obsolete et scoop pb de path
+# Le PC doit être en mode développeur pour supporter les symlinks gérés par dotter
+
+# gsudo pour l'élévation en ligne de commande
+scoop install gsudo
+# module starship (cross shell prompt)
+gsudo choco install starship
+# miniconda:  choco obsolete et scoop pb de path
 winget install miniconda3
 choco install weztree
 winget install microsoft.powershell
