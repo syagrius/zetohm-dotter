@@ -1,6 +1,6 @@
 [package]
 name = "check-prerequisites"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
 description = "Zet'ohm Development Environment Prerequisites Checker"
 authors = ["Zet'ohm <contact@zetohm.fr>"]
