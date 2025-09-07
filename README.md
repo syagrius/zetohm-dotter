@@ -31,6 +31,9 @@ Conservé et amélioré
     Lazarus avec mORMot2 + Zeos
     Principe du dog fooding : utilisation de nos outils internes avec la toolchain déployée chez nos utilisateurs ou clients
 
+    Nous utilisons scoop, choco et winget dans cette ordre pour déployer les outils.
+  
+
 Nouveautés et remplacements
 
     Terminal : WezTerm (Rust) + Sharship (Rust) + zoxide (Rust) + fzf (go) → remplace ConEmu + Terminal Preview
