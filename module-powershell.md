@@ -4,7 +4,7 @@
 
 ### 1. Vérifier que le profil PowerShell existe
 ```bash
-ls -la "C:\Users\Serge\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+ls -la "C:\Users\%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
 ```
 Résultat : Le fichier existe (188 bytes, modifié le 4 sept. 21:58)
 
@@ -15,7 +15,7 @@ mkdir -p powershell
 
 ### 3. Copier le profil PowerShell dans le dépôt dotter
 ```bash
-cp "C:\Users\Serge\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" powershell/
+cp "C:\Users\%USERPROFILE%\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" powershell/
 ```
 
 ### 4. Configurer le déploiement dans .dotter/global.toml
