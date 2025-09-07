@@ -1,6 +1,6 @@
 [package]
 name = "check-prerequisites"
-version = "0.1.0"
+version = "1.0.1"
 edition = "2024"
 description = "Zet'ohm Development Environment Prerequisites Checker"
 authors = ["Zet'ohm <contact@zetohm.fr>"]
@@ -11,3 +11,12 @@ colored = "2.0"
 winreg = "0.52"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+
+[build-dependencies]
+winres = "0.1"
+
+[profile.release]
+strip = true          # Supprime les symboles debug
+lto = true           # Link Time Optimization
+codegen-units = 1    # Optimisation maximale
+panic = "abort"      # Pas d'unwinding

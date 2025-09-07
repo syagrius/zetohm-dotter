@@ -20,12 +20,23 @@ struct ScoopApp {
     #[serde(rename = "Name")]
     name: String,
     #[serde(rename = "Version")]
-    version: String,
+    version: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+struct ScoopBucket {
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Source")]
+    source: String,
 }
 
 #[derive(Debug, Deserialize)]
 struct ScoopExport {
     apps: Vec<ScoopApp>,
+    #[allow(dead_code)]
+    buckets: Vec<ScoopBucket>,
 }
 
 
@@ -33,6 +44,8 @@ struct ScoopExport {
 struct Args {
     install: bool,
     help: bool,
+    #[allow(dead_code)]
+    version: bool,
 }
 
 fn parse_args() -> Result<Args, Box<dyn std::error::Error>> {
@@ -43,12 +56,16 @@ fn parse_args() -> Result<Args, Box<dyn std::error::Error>> {
     while let Some(arg) = parser.next()? {
         match arg {
             Short('h') | Long("help") => help = true,
+            Short('V') | Long("version") => {
+                println!("check-prerequisites {}", env!("CARGO_PKG_VERSION"));
+                std::process::exit(0);
+            }
             Long("install") => install = true,
             _ => return Err(arg.unexpected().into()),
         }
     }
 
-    Ok(Args { install, help })
+    Ok(Args { install, help, version: false })
 }
 
 fn show_help() {
@@ -59,6 +76,7 @@ fn show_help() {
     println!();
     println!("{}", "OPTIONS:".yellow().bold());
     println!("    -h, --help       Show this help");
+    println!("    -V, --version    Show version information");
     println!("    --install        Install missing prerequisites automatically");
     println!();
     println!("{}", "EXAMPLES:".yellow().bold());
@@ -206,19 +224,33 @@ fn get_scoop_installed_packages() -> Result<std::collections::HashMap<String, St
     let output = Command::new("powershell")
         .args(&["-NoProfile", "-Command", "scoop export"])
         .stdout(Stdio::piped())
-        .stderr(Stdio::null())
+        .stderr(Stdio::piped())
         .output()?;
     
     if !output.status.success() {
-        return Err("scoop export failed".into());
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("scoop export failed: {}", stderr).into());
     }
     
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let scoop_export: ScoopExport = serde_json::from_str(&stdout)?;
+    
+    // Debug output for troubleshooting
+    if stdout.trim().is_empty() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("scoop export returned empty output. stderr: {}", stderr).into());
+    }
+    
+    let scoop_export: ScoopExport = serde_json::from_str(&stdout)
+        .map_err(|e| format!("Failed to parse scoop export JSON: {}. Output was: {}", e, stdout))?;
     
     let mut packages = std::collections::HashMap::new();
     for app in scoop_export.apps {
-        packages.insert(app.name, app.version);
+        // Skip apps that failed to install or have no version
+        if let Some(version) = app.version {
+            if !version.is_empty() {
+                packages.insert(app.name, version);
+            }
+        }
     }
     
     Ok(packages)
