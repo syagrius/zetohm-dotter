@@ -54,6 +54,8 @@ Nouveautés et remplacements
 
 # gsudo pour l'élévation en ligne de commande
 scoop install gsudo
+# module starship (cross shell prompt)
+gsudo choco install starship
 # miniconda:  choco obsolete et scoop pb de path
 winget install miniconda3
 choco install weztree
