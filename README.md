@@ -50,7 +50,11 @@ Nouveautés et remplacements
 
 ```powershell
 # Prérequis
-# minicond:  choco obsolete et scoop pb de path
+# Le PC doit être en mode développeur pour supporter les symlinks gérés par dotter
+
+# gsudo pour l'élévation en ligne de commande
+scoop install gsudo
+# miniconda:  choco obsolete et scoop pb de path
 winget install miniconda3
 choco install weztree
 winget install microsoft.powershell
