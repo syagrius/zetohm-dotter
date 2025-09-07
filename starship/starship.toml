@@ -34,8 +34,7 @@ read_only = " 󰌾"
 truncation_length = 0
 # ne coupe pas au niveau de la racine du dépôt Git
 truncate_to_repo = false
-# remplace le "~" par ton vrai HOME pour voir C:\Users\Serge\...
-home_symbol = "C:\\Users\\Serge"
+# utiliser le ~ par défaut pour représenter le répertoire home
 # (facultatif) forcer les antislashs Windows
 use_os_path_sep = true
 
