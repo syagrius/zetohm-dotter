@@ -11,6 +11,10 @@ const SCOOP_PACKAGES: &[&str] = &[
 
 const CHOCO_PACKAGES: &[&str] = &["miniconda3", "wezterm"];
 
+const MANUAL_PACKAGES: &[(&str, &str)] = &[
+    ("miniconda3", "conda"),
+];
+
 #[derive(Debug, Deserialize)]
 struct ScoopApp {
     #[serde(rename = "Name")]
@@ -65,6 +69,7 @@ fn show_help() {
     println!("    • Windows Developer Mode");
     println!("    • Scoop (package manager)");
     println!("    • Chocolatey (package manager)");
+    println!("    • Manual packages: {}", MANUAL_PACKAGES.iter().map(|(name, _)| *name).collect::<Vec<_>>().join(", "));
     println!("    • Scoop packages: {}", SCOOP_PACKAGES.join(", "));
     println!("    • Chocolatey packages: {}", CHOCO_PACKAGES.join(", "));
     println!();
@@ -131,6 +136,27 @@ fn check_command_exists(command: &str) -> bool {
         .status()
         .map(|status| status.success())
         .unwrap_or(false)
+}
+
+fn get_manual_package_version(command: &str) -> Option<String> {
+    let output = Command::new(command)
+        .arg("--version")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .output();
+
+    match output {
+        Ok(output) if output.status.success() => {
+            let version_output = String::from_utf8_lossy(&output.stdout);
+            // Extract first line and clean it up
+            let version = version_output.lines().next()
+                .unwrap_or("(installed)")
+                .trim()
+                .to_string();
+            Some(version)
+        }
+        _ => None,
+    }
 }
 
 fn install_scoop() -> Result<(), Box<dyn std::error::Error>> {
@@ -356,6 +382,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Manual packages
+    print_section("Checking Manual Packages");
+    let mut manual_ok = 0;
+    let mut manual_found = std::collections::HashSet::new();
+    for (package, command) in MANUAL_PACKAGES {
+        if let Some(version) = get_manual_package_version(command) {
+            print_ok(&format!("{} {} installed", package, version));
+            manual_ok += 1;
+            manual_found.insert(package);
+        } else {
+            print_warning(&format!("{} not installed (manual installation required)", package));
+        }
+    }
+
     // Scoop packages
     print_section("Checking Scoop Packages");
     let mut scoop_ok = 0;
@@ -396,6 +436,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         });
         
         for package in CHOCO_PACKAGES {
+            // Skip if already found in manual packages
+            if manual_found.contains(package) {
+                print_info(&format!("{} already found via manual installation", package));
+                choco_ok += 1;
+                continue;
+            }
+            
             if let Some(version) = get_choco_package_version(package, &installed_packages) {
                 print_ok(&format!("{} {} installed", package, version));
                 choco_ok += 1;
@@ -430,6 +477,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "Chocolatey: {}",
         if check_command_exists("choco") { "OK" } else { "NOK" }
     ));
+    print_info(&format!("Manual packages: {}/{}", manual_ok, MANUAL_PACKAGES.len()));
     print_info(&format!("Scoop packages: {}/{}", scoop_ok, SCOOP_PACKAGES.len()));
     print_info(&format!("Chocolatey packages: {}/{}", choco_ok, CHOCO_PACKAGES.len()));
 
