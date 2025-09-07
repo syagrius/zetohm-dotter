@@ -1,0 +1,13 @@
+[package]
+name = "check-prerequisites"
+version = "0.1.0"
+edition = "2024"
+description = "Zet'ohm Development Environment Prerequisites Checker"
+authors = ["Zet'ohm <contact@zetohm.fr>"]
+
+[dependencies]
+lexopt = "0.3"
+colored = "2.0"
+winreg = "0.52"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
