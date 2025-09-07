@@ -1,5 +1,8 @@
 [symlinks]
+"fnm/fnm-init.ps1" = "C:\\Users\\Serge/.config/powershell/fnm-init.ps1"
 "powershell/Microsoft.PowerShell_profile.ps1" = "C:\\Users\\Serge/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
+"starship/starship-init.ps1" = "C:\\Users\\Serge/.config/powershell/starship-init.ps1"
+"starship/starship.toml" = "C:\\Users\\Serge/.config/starship.toml"
 "wezterm/wezterm.lua" = "C:\\Users\\Serge/.config/wezterm/wezterm.lua"
 
 [templates]

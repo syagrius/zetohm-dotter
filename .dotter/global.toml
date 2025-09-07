@@ -18,5 +18,15 @@ depends = []
 
 [fnm.variables]
 
+# Package Starship (Cross-shell prompt)
+[starship]
+depends = []
+
+[starship.files]
+"starship/starship.toml" = "~/.config/starship.toml"
+"starship/starship-init.ps1" = "~/.config/powershell/starship-init.ps1"
+
+[starship.variables]
+
 [settings]
 default_target_type = "automatic"

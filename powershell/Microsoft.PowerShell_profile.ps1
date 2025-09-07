@@ -6,5 +6,8 @@ if (Test-Path $fnmInit) {
 
 Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
-# Add Starship
-Invoke-Expression (& starship init powershell)
+# Load Starship if package is active
+$starshipInit = "$env:USERPROFILE\.config\powershell\starship-init.ps1"
+if (Test-Path $starshipInit) {
+    . $starshipInit
+}

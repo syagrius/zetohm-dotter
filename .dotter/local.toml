@@ -1,5 +1,5 @@
 includes = []
-packages = ["default", "fnm"]
+packages = ["default", "fnm", "starship"]
 
 [files]
 
