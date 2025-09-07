@@ -24,6 +24,7 @@ struct ScoopExport {
     apps: Vec<ScoopApp>,
 }
 
+
 #[derive(Debug)]
 struct Args {
     install: bool,
@@ -229,37 +230,42 @@ fn install_scoop_package(package: &str) -> Result<(), Box<dyn std::error::Error>
     }
 }
 
-fn get_choco_package_version(package: &str) -> Option<String> {
-    // For chocolatey packages, we'll just check if they're in standard locations
-    // Since chocolatey packages might not be in PATH
-    
-    // Try to use chocolatey command
-    if let Ok(output) = Command::new("choco")
-        .args(&["list", "--local-only", "--exact", package])
+fn get_choco_installed_packages() -> Result<std::collections::HashMap<String, String>, Box<dyn std::error::Error>> {
+    // Use chocolatey list to get package information
+    let output = Command::new("powershell")
+        .args(&["-NoProfile", "-Command", "choco list"])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
-        .output() 
-    {
-        if output.status.success() {
-            let stdout = String::from_utf8_lossy(&output.stdout);
+        .output()?;
+    
+    if !output.status.success() {
+        return Err("choco list failed".into());
+    }
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let mut result = std::collections::HashMap::new();
+    
+    // Parse lines like "packagename version"
+    for line in stdout.lines() {
+        let trimmed = line.trim();
+        if !trimmed.is_empty() && 
+           !trimmed.starts_with("Chocolatey") && 
+           !trimmed.contains("packages installed") {
             
-            // Parse chocolatey output to extract version
-            for line in stdout.lines() {
-                let trimmed = line.trim();
-                if trimmed.starts_with(package) && 
-                   (trimmed.len() == package.len() || 
-                    trimmed.chars().nth(package.len()).map_or(false, |c| c.is_whitespace())) {
-                    
-                    let parts: Vec<&str> = trimmed.split_whitespace().collect();
-                    if parts.len() >= 2 {
-                        return Some(parts[1].to_string());
-                    }
-                }
+            let parts: Vec<&str> = trimmed.split_whitespace().collect();
+            if parts.len() >= 2 {
+                let package_name = parts[0];
+                let version = parts[1];
+                result.insert(package_name.to_string(), version.to_string());
             }
         }
     }
     
-    None
+    Ok(result)
+}
+
+fn get_choco_package_version(package: &str, installed_packages: &std::collections::HashMap<String, String>) -> Option<String> {
+    installed_packages.get(package).cloned()
 }
 
 
@@ -384,8 +390,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     print_section("Checking Chocolatey Packages");
     let mut choco_ok = 0;
     if choco_installed || check_command_exists("choco") {
+        let installed_packages = get_choco_installed_packages().unwrap_or_else(|e| {
+            print_warning(&format!("Could not get choco list: {}, using fallback detection", e));
+            std::collections::HashMap::new()
+        });
+        
         for package in CHOCO_PACKAGES {
-            if let Some(version) = get_choco_package_version(package) {
+            if let Some(version) = get_choco_package_version(package, &installed_packages) {
                 print_ok(&format!("{} {} installed", package, version));
                 choco_ok += 1;
             } else {
