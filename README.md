@@ -2,10 +2,12 @@
     🇫🇷 Documentation and discussions in French
 
 Système de gestion des configurations avec Dotter
-📋 Description
+
+## 📋 Description
 
 Ce projet expérimental présente un système de gestion des fichiers de configuration utilisant Dotter en remplacement des git worktrees pour versionner séparément chaque outil de développement. Cette approche permet de maintenir des configurations isolées tout en conservant un historique distinct pour chaque composant de la toolchain.
-🏢 Contexte - Zet'ohm 2025
+
+## 🏢 Contexte - Zet'ohm 2025
 
 Depuis 2025, chez Zet'ohm, nous intégrons Rust dans notre écosystème de développement. Notre philosophie combine :
 
@@ -13,7 +15,7 @@ Depuis 2025, chez Zet'ohm, nous intégrons Rust dans notre écosystème de déve
     Closed-source : pour certains développements spécifiques
 
 Ces deux approches se complètent parfaitement dans notre stratégie technique.
-🔄 Évolution de la toolchain
+## 🔄 Évolution de la toolchain
 Stack d'origine
 
     Backend : Lazarus/FPC et Python 3
@@ -41,3 +43,20 @@ Nouveautés et remplacements
     WebView : Migration de DCEF vers WebView2 pour les nouveaux développements
     Conteneurs : Podman en complément/concurrent de Docker
     Installeurs : Conservation d'InnoSetup
+
+## Installation
+
+### 1. Premier setup sur une nouvelle machine
+
+```powershell
+# Prérequis
+# minicond:  choco obsolete et scoop pb de path
+winget install miniconda3
+choco install weztree
+winget install microsoft.powershell
+conda init powershell
+
+scoop install zoxide fzf
+zoxide init powershell
+# Pour l'élévation
+winget install gsudo
