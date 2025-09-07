@@ -1,5 +1,6 @@
 use colored::*;
 use lexopt::prelude::*;
+use serde::Deserialize;
 use std::process::{Command, Stdio};
 use winreg::enums::*;
 use winreg::RegKey;
@@ -9,6 +10,19 @@ const SCOOP_PACKAGES: &[&str] = &[
 ];
 
 const CHOCO_PACKAGES: &[&str] = &["miniconda3", "wezterm"];
+
+#[derive(Debug, Deserialize)]
+struct ScoopApp {
+    #[serde(rename = "Name")]
+    name: String,
+    #[serde(rename = "Version")]
+    version: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct ScoopExport {
+    apps: Vec<ScoopApp>,
+}
 
 #[derive(Debug)]
 struct Args {
@@ -76,6 +90,7 @@ fn print_section(msg: &str) {
     println!();
     println!("🔧 {}", msg.magenta().bold());
 }
+
 
 fn is_admin() -> bool {
     Command::new("net")
@@ -160,11 +175,42 @@ fn install_chocolatey() -> Result<(), Box<dyn std::error::Error>> {
     }
 }
 
-fn check_scoop_package(package: &str) -> bool {
-    // Use PATH-based detection as it's more reliable from Rust
-    // Future improvement: use `scoop export` JSON parsing when PATH issues are resolved
-    check_command_exists(package)
+fn get_scoop_installed_packages() -> Result<std::collections::HashMap<String, String>, Box<dyn std::error::Error>> {
+    let output = Command::new("powershell")
+        .args(&["-NoProfile", "-Command", "scoop export"])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .output()?;
+    
+    if !output.status.success() {
+        return Err("scoop export failed".into());
+    }
+    
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let scoop_export: ScoopExport = serde_json::from_str(&stdout)?;
+    
+    let mut packages = std::collections::HashMap::new();
+    for app in scoop_export.apps {
+        packages.insert(app.name, app.version);
+    }
+    
+    Ok(packages)
 }
+
+fn get_scoop_package_version(package: &str, installed_packages: &std::collections::HashMap<String, String>) -> Option<String> {
+    // First try to get version from scoop export
+    if let Some(version) = installed_packages.get(package) {
+        return Some(version.clone());
+    }
+    
+    // Fallback: check if package is in PATH (but no version info)
+    if check_command_exists(package) {
+        return Some("(installed)".to_string());
+    }
+    
+    None
+}
+
 
 fn install_scoop_package(package: &str) -> Result<(), Box<dyn std::error::Error>> {
     print_info(&format!("Installing {}...", package));
@@ -183,21 +229,39 @@ fn install_scoop_package(package: &str) -> Result<(), Box<dyn std::error::Error>
     }
 }
 
-fn check_choco_package(package: &str) -> bool {
-    let output = Command::new("choco")
+fn get_choco_package_version(package: &str) -> Option<String> {
+    // For chocolatey packages, we'll just check if they're in standard locations
+    // Since chocolatey packages might not be in PATH
+    
+    // Try to use chocolatey command
+    if let Ok(output) = Command::new("choco")
         .args(&["list", "--local-only", "--exact", package])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
-        .output();
-    
-    match output {
-        Ok(output) => {
+        .output() 
+    {
+        if output.status.success() {
             let stdout = String::from_utf8_lossy(&output.stdout);
-            stdout.contains(package)
+            
+            // Parse chocolatey output to extract version
+            for line in stdout.lines() {
+                let trimmed = line.trim();
+                if trimmed.starts_with(package) && 
+                   (trimmed.len() == package.len() || 
+                    trimmed.chars().nth(package.len()).map_or(false, |c| c.is_whitespace())) {
+                    
+                    let parts: Vec<&str> = trimmed.split_whitespace().collect();
+                    if parts.len() >= 2 {
+                        return Some(parts[1].to_string());
+                    }
+                }
+            }
         }
-        Err(_) => false,
     }
+    
+    None
 }
+
 
 fn install_choco_package(package: &str) -> Result<(), Box<dyn std::error::Error>> {
     if !is_admin() {
@@ -290,9 +354,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     print_section("Checking Scoop Packages");
     let mut scoop_ok = 0;
     if scoop_installed || check_command_exists("scoop") {
+        let installed_packages = get_scoop_installed_packages().unwrap_or_else(|_| {
+            print_warning("Could not get scoop export, using fallback detection");
+            std::collections::HashMap::new()
+        });
+        
         for package in SCOOP_PACKAGES {
-            if check_scoop_package(package) {
-                print_ok(&format!("{} installed", package));
+            if let Some(version) = get_scoop_package_version(package, &installed_packages) {
+                print_ok(&format!("{} {} installed", package, version));
                 scoop_ok += 1;
             } else {
                 print_warning(&format!("{} not installed", package));
@@ -316,8 +385,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut choco_ok = 0;
     if choco_installed || check_command_exists("choco") {
         for package in CHOCO_PACKAGES {
-            if check_choco_package(package) {
-                print_ok(&format!("{} installed", package));
+            if let Some(version) = get_choco_package_version(package) {
+                print_ok(&format!("{} {} installed", package, version));
                 choco_ok += 1;
             } else {
                 print_warning(&format!("{} not installed", package));
