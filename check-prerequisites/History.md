@@ -1,5 +1,26 @@
 # History - Check Prerequisites
 
+## Version 1.0.2 (2025-09-07)
+
+### ✨ New Features
+
+**Enhanced Package Detection**
+- Added `dotter` to Scoop packages list for dotfile management tool verification
+- Added `rust` to manual packages list with `rustc` command verification
+- Enhanced manual package detection shows version information for both conda and rustc
+
+### 📋 Changes Made
+
+1. **src/main.rs:8-10**: Added "dotter" to `SCOOP_PACKAGES` constant array
+2. **src/main.rs:14-17**: Added ("rust", "rustc") to `MANUAL_PACKAGES` constant array  
+3. **Cargo.toml:3**: Updated version to 1.0.2
+
+### ✅ Package Detection Summary
+
+- **Manual packages**: 2/2 (miniconda3 via conda, rust via rustc)
+- **Scoop packages**: 10/10 (including new dotter package)
+- **Chocolatey packages**: 2/2 (wezterm, miniconda3 with cross-reference detection)
+
 ## Version 1.0.1 (2025-09-07)
 
 ### ✨ New Features

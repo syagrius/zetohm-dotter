@@ -15,6 +15,7 @@ const MANUAL_PACKAGES: &[(&str, &str)] = &[
     ("miniconda3", "conda"),
     ("svn", "svn"),
     ("git", "git"),
+    ("rust", "rustc"),
 ];
 
 #[derive(Debug, Deserialize)]
