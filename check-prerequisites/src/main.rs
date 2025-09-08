@@ -6,13 +6,15 @@ use winreg::enums::*;
 use winreg::RegKey;
 
 const SCOOP_PACKAGES: &[&str] = &[
-    "fnm", "fzf", "gh", "gsudo", "sfk", "unison", "vcxsrv", "winscp", "zoxide",
+    "dotter", "fnm", "fzf", "gh", "gsudo", "sfk", "unison", "vcxsrv", "winscp", "zoxide",
 ];
 
 const CHOCO_PACKAGES: &[&str] = &["miniconda3", "wezterm"];
 
 const MANUAL_PACKAGES: &[(&str, &str)] = &[
     ("miniconda3", "conda"),
+    ("svn", "svn"),
+    ("git", "git"),
 ];
 
 #[derive(Debug, Deserialize)]
