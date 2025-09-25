@@ -39,7 +39,6 @@ depends = []
 
 [common.files]
 "common/starship/starship.toml" = "~/.config/starship.toml"
-"common/gitconfig" = { target = "~/.gitconfig", type = "symbolic" }
 
 [common.variables]
 
