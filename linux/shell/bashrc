@@ -1,0 +1,59 @@
+# ~/.bashrc
+
+# Si on n'est pas en mode interactif, ne pas continuer
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# Historique
+HISTCONTROL=ignoreboth
+shopt -s histappend
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# Vérifier la taille de la fenêtre après chaque commande
+shopt -s checkwinsize
+
+# Couleurs pour ls
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# Aliases utiles
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Activer la complétion
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# Zoxide (alternative à cd)
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init bash)"
+fi
+
+# FZF
+if command -v fzf &> /dev/null; then
+    eval "$(fzf --bash)"
+fi
+
+# Node.js avec FNM
+if command -v fnm &> /dev/null; then
+    eval "$(fnm env --use-on-cd)"
+fi
+
+# Starship prompt (doit être en dernier)
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+fi

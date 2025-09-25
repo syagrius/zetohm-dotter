@@ -1,0 +1,31 @@
+# ~/.profile
+
+# Si bash existe et qu'on est dans un shell interactif, charger ~/.bashrc
+if [ -n "$BASH_VERSION" ]; then
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+
+# Ajouter les binaires locaux au PATH si le dossier existe
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# Variables d'environnement communes
+export EDITOR=vim
+export PAGER=less
+
+# FNM (Fast Node Manager)
+if [ -d "$HOME/.fnm" ]; then
+    export PATH="$HOME/.fnm:$PATH"
+fi
+
+# Cargo (Rust)
+if [ -d "$HOME/.cargo/bin" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+fi

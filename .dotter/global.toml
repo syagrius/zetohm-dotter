@@ -1,20 +1,57 @@
 [helpers]
 
-[default]
+[settings]
+default_target_type = "automatic"
+
+# ===============================================
+# Configuration Windows
+# ===============================================
+[windows]
+depends = ["common"]
+
+[windows.files]
+"windows/wezterm.lua" = "~/.config/wezterm/wezterm.lua"
+"windows/powershell/Microsoft.PowerShell_profile.ps1" = "~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
+"windows/fnm/fnm-init.ps1" = "~/.config/powershell/fnm-init.ps1"
+"windows/starship/starship-init.ps1" = "~/.config/powershell/starship-init.ps1"
+
+[windows.variables]
+
+# ===============================================
+# Configuration Linux
+# ===============================================
+[linux]
+depends = ["common"]
+
+[linux.files]
+"linux/wezterm.lua" = "~/.config/wezterm/wezterm.lua"
+"linux/shell/bashrc" = "~/.bashrc"
+"linux/shell/zshrc" = "~/.zshrc"
+"linux/shell/profile" = "~/.profile"
+
+[linux.variables]
+
+# ===============================================
+# Configuration commune (Windows + Linux)
+# ===============================================
+[common]
 depends = []
 
-[default.files]
-"wezterm/wezterm.lua" = "~/.config/wezterm/wezterm.lua"
-"powershell/Microsoft.PowerShell_profile.ps1" = "~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
+[common.files]
+"common/starship/starship.toml" = "~/.config/starship.toml"
+"common/gitconfig" = { target = "~/.gitconfig", type = "symbolic" }
 
-[default.variables]
+[common.variables]
+
+# ===============================================
+# Packages optionnels
+# ===============================================
 
 # Package FNM (Fast Node Manager)
 [fnm]
 depends = []
 
 [fnm.files]
-"fnm/fnm-init.ps1" = "~/.config/powershell/fnm-init.ps1"
 
 [fnm.variables]
 
@@ -23,10 +60,5 @@ depends = []
 depends = []
 
 [starship.files]
-"starship/starship.toml" = "~/.config/starship.toml"
-"starship/starship-init.ps1" = "~/.config/powershell/starship-init.ps1"
 
 [starship.variables]
-
-[settings]
-default_target_type = "automatic"

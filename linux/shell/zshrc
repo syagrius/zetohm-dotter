@@ -1,0 +1,51 @@
+# ~/.zshrc
+
+# Historique
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.zsh_history
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_SPACE
+
+# Complétion
+autoload -Uz compinit
+compinit
+
+# Correction des erreurs de frappe
+setopt CORRECT
+
+# Couleurs
+autoload -U colors && colors
+
+# Aliases utiles
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+# Zoxide (alternative à cd)
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+# FZF
+if command -v fzf &> /dev/null; then
+    source <(fzf --zsh)
+fi
+
+# Node.js avec FNM
+if command -v fnm &> /dev/null; then
+    eval "$(fnm env --use-on-cd)"
+fi
+
+# Starship prompt (doit être en dernier)
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+fi
