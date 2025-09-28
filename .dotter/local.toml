@@ -1,5 +1,5 @@
 includes = []
-packages = ["windows", "fnm", "starship"]
+packages = ["linux", "fnm", "starship"]
 
 [files]
 
