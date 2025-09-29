@@ -3,16 +3,15 @@ local wezterm = require 'wezterm'
 wezterm.on('gui-startup', function(cmd)
   local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
 
-  -- Créer le split avec zsh ou bash
+  -- Créer le split vertical
   pane:split {
     direction = 'Right',
-    args = { '/bin/zsh' },  -- ou '/bin/bash' selon votre préférence
   }
 end)
 
 return {
-  -- Shell par défaut pour Linux
-  default_prog = { '/bin/zsh' },  -- ou { '/bin/bash' }
+  -- Shell par défaut
+  default_prog = { '/bin/bash' },
 
   initial_cols = 160,
   initial_rows = 40,
