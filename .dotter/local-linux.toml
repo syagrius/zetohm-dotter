@@ -1,6 +1,0 @@
-includes = []
-packages = ["linux", "fnm", "starship"]
-
-[files]
-
-[variables]

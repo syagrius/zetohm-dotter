@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotter deploy:*)",
+      "Bash(scoop:*)",
+      "Read(//c/Users/Serge/.config/**)",
+      "Bash(where scoop)",
+      "Read(//c/Users/Serge/scoop/**)",
+      "Bash(git --version)",
+      "Read(//c/Users/Serge/**)",
+      "Bash(git config:*)",
+      "Bash(gh repo rename:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(powershell:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
