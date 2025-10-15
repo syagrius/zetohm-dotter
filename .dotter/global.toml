@@ -14,6 +14,7 @@ depends = ["common"]
 "windows/powershell/Microsoft.PowerShell_profile.ps1" = "~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1"
 "windows/fnm/fnm-init.ps1" = "~/.config/powershell/fnm-init.ps1"
 "windows/starship/starship-init.ps1" = "~/.config/powershell/starship-init.ps1"
+"windows/zoxide/zoxide-init.ps1" = "~/.config/powershell/zoxide-init.ps1"
 
 [windows.variables]
 
@@ -61,3 +62,11 @@ depends = []
 [starship.files]
 
 [starship.variables]
+
+# Package Zoxide (Smart directory jumper)
+[zoxide]
+depends = []
+
+[zoxide.files]
+
+[zoxide.variables]

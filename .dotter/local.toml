@@ -1,7 +1,7 @@
 includes = []
 
 # Pour Windows: remplacez "windows" par "linux" si vous êtes sous Linux
-packages = ["common", "windows", "fnm", "starship"]
+packages = ["common", "windows", "fnm", "starship", "zoxide"]
 
 [files]
 

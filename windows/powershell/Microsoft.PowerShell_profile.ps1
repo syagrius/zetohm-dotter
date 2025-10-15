@@ -4,7 +4,11 @@ if (Test-Path $fnmInit) {
     . $fnmInit
 }
 
-Invoke-Expression (& { (zoxide init powershell | Out-String) })
+# Load Zoxide if package is active
+$zoxideInit = "$env:USERPROFILE\.config\powershell\zoxide-init.ps1"
+if (Test-Path $zoxideInit) {
+    . $zoxideInit
+}
 
 # Load Starship if package is active
 $starshipInit = "$env:USERPROFILE\.config\powershell\starship-init.ps1"
