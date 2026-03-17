@@ -55,6 +55,7 @@ Nouveautés et remplacements
 # Prérequis
 # Le PC doit être en mode développeur pour supporter les symlinks gérés par dotter
 
+winget install chocolatey
 # gsudo pour l'élévation en ligne de commande
 scoop install gsudo
 # module starship (cross shell prompt)
